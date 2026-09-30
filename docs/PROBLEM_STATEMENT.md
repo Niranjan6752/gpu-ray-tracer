@@ -1,4 +1,5 @@
 # CUDA Ray Tracing
+Ever wondered how games make reflections and shadows look so real? That's ray tracing. In this project you'll build your own from scratch and find out just how fast you can render one.
 
 ## Overview
 Ray tracing produces realistic images by simulating how light rays travel and bounce through a
@@ -7,7 +8,7 @@ At the same time, its recursive nature and irregular control flow make it an int
 workload.
 
 In this project you will build a working ray tracer in CUDA, add reflections and shadows, then make
-it faster. The emphasis of this course is not on producing pretty pictures. By the end of the
+it faster. The emphasis of this course is **not** on producing pretty pictures. By the end of the
 project, you should be able to:
 
 - Map a 2D image onto a CUDA grid of threads.
@@ -15,7 +16,7 @@ project, you should be able to:
 - Measure GPU performance and reason about warp divergence, occupancy, and memory behaviour.
 
 ## Starting Point
-You are given a small CPU ray tracer (`starter_raytracer.cpp`) that renders 3 spheres on a
+You are given a small CPU ray tracer (`starter_raytracer_cpu.cpp`) that renders 3 spheres on a
 checkerboard floor with diffuse shading and hard shadows, to give you some graphics knowledge to
 begin with.
 
@@ -28,7 +29,7 @@ You can later extend to multiple reflection bounces and study their effect on vi
 execution time, and GPU utilization, measured with CUDA events and presented as a function of
 reflection depth.
 
-## Open-Ended Extensions (optional)
+## Open-Ended Extensions
 You may pursue additional extensions of your choice to encourage creativity and exploration, or to make a more computationally intensive workload.
 Examples: additional spheres or geometric shapes, custom
 scenes, textures, bounding volume hierarchies (BVH), and higher resolutions.
@@ -37,7 +38,7 @@ Optimizations may target GPU efficiency (memory access, occupancy, reducing dive
 launch-configuration tuning) and/or algorithmic improvements (e.g. acceleration structures like
 a BVH).
 
-These are optional — you can still continue with just spheres and a plane. Scene complexity /
+These are ***optional*** — you can still continue with just spheres and a plane. Scene complexity /
 artistic quality is not part of the grading criteria.
 
 ## Deliverables
@@ -50,7 +51,7 @@ artistic quality is not part of the grading criteria.
      help and the likely reasons why;
    - explicit reasoning about warp divergence, occupancy, register pressure, and memory behaviour.
 
-## Notes on Measurement
+# Notes 
 - Time the kernels with CUDA events (warm up, then synchronize) — not wall-clock around the
   whole program. A trivial scene is dominated by launch/transfer overhead, so scale up resolution
   and bounce depth until timings are meaningful before optimizing.
@@ -58,3 +59,4 @@ artistic quality is not part of the grading criteria.
   leaves the scene, or ray energy falls below a threshold and its contribution becomes negligible
 - Reflection math: reflected direction `r = d - 2 (d·n) n` for incoming direction `d` and unit
   normal `n`.
+- *On using LLMs* - The joy of this project is to build a mini version yourself. Polished ray tracers exist and an LLM can hand you one in seconds - the point is not to compete with them. We suggest limiting LLM use to explaining snippets, clear doubts or discuss ideas. 
