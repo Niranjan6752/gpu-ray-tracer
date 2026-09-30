@@ -1,7 +1,7 @@
 # CUDA Ray Tracing — Course Project
 
 A GPU programming project: start from a small CPU ray tracer, port it to CUDA,
-add reflections, and make it fast. See [`PROBLEM_STATEMENT.pdf`](PROBLEM_STATEMENT.pdf)
+add reflections, and make it fast. See [`docs/PROBLEM_STATEMENT.md`](PROBLEM_STATEMENT.md)
 for the full brief.
 
 ## Contents
