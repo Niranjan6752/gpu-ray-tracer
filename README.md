@@ -1,8 +1,6 @@
 # CUDA Ray Tracing — Course Project
 
-A GPU programming project: start from a small CPU ray tracer, port it to CUDA,
-add reflections, and make it fast. See [`docs/PROBLEM_STATEMENT.md`](PROBLEM_STATEMENT.md)
-for the full brief.
+This repository contains the starter code and project specification for the CUDA Ray Tracing project.
 
 ## Contents
 - `starter_raytracer_cpu.cpp` — the CPU starter code (spheres on a checkerboard floor,
@@ -11,11 +9,9 @@ for the full brief.
 
 ## Build & Run
 ```bash
-g++ -O2 -o raytracer starter_raytracer.cpp
+g++ -O2 -o raytracer starter_raytracer_cpu.cpp
 ./raytracer            # writes image.ppm
 ```
 
 ## Your task
-Port the pixel loop to a CUDA kernel (one thread per pixel), add reflections,
-and study performance vs. image resolution and bounce depth. Details in the
-problem statement.
+Implement your own Ray Tracer. Start from a small CPU ray tracer, port it to CUDA, add reflections, and make it fast. 
