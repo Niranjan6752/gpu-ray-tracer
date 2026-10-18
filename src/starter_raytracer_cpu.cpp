@@ -70,33 +70,40 @@ int closestHit(Vec3 origin, Vec3 dir, float& tHit) {
 }
 
 // Compute the color seen along one ray.
-Vec3 rayColor(Vec3 origin, Vec3 dir) {
+Vec3 rayColor(Vec3 origin, Vec3 dir) {// Origin is the CameraPosition, Dir
     // TRY IT: move the light around and see how shading/shadows change.
     // x = right, y = up, z = toward the camera.
     Vec3  lightPos(4, 6, 2);
-    float tHit;
-    int   hit = closestHit(origin, dir, tHit);
+    float tHit; //This stores the closest hit point
+    int   hit = closestHit(origin, dir, tHit); //The sphere which is being hit by the ray
 
     if (hit < 0) {
         // Miss: draw a simple sky gradient (white near horizon -> blue up top).
         float t = 0.5f * (dir.y + 1.0f);
-        return Vec3(1, 1, 1) * (1 - t) + Vec3(0.4f, 0.6f, 1.0f) * t;
+        return Vec3(1, 1, 1) * (1 - t) + Vec3(0.4f, 0.6f, 1.0f) * t; // blend white and blue
     }
 
     // The point we hit, and the surface normal there.
     Vec3 p = origin + dir * tHit;
+
+    // hit is the index of the sphere that was hit. 
+    // p − center is an arrow from the sphere’s centre out to the hit point, 
+    // which is perpendicular to the surface there.
     Vec3 n = normalize(p - scene[hit].center);
 
     // Base color: checkerboard for the floor, solid color otherwise.
     Vec3 base = scene[hit].color;
+
+    //CheckerBoard color Logic
     if (scene[hit].isFloor) {
         int cx = (int)std::floor(p.x), cz = (int)std::floor(p.z);
         bool white = ((cx + cz) & 1) == 0;
         base = white ? Vec3(0.9f, 0.9f, 0.9f) : Vec3(0.2f, 0.2f, 0.2f);
+        // base = white ? Vec3(0.0, 0.0, 0.0) : Vec3(1, 1, 1)*2;
     }
 
     // Diffuse lighting: how directly does the surface face the light?
-    Vec3  toLight = normalize(lightPos - p);
+    Vec3  toLight = normalize(lightPos - p); // Lighting Direction
     float diffuse = std::fmax(0.0f, dot(n, toLight));
 
     // Hard shadow: shoot a ray toward the light; if it hits something, we're shadowed.
@@ -109,8 +116,8 @@ Vec3 rayColor(Vec3 origin, Vec3 dir) {
 }
 
 int main() {
-    const int W = 800, H = 600;
-    std::vector<unsigned char> image(W * H * 3);
+    const int W = 800, H = 600; //Setup image dimensions
+    std::vector<unsigned char> image(W * H * 3);//Total Pixels - Stored as (R, G, B per pixel)
 
     // TRY IT: move the camera and see how the view changes.
     // x = right, y = up, z = toward the viewer (spheres sit near z = -1).
