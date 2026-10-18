@@ -1,6 +1,6 @@
 // CUDA port of the CPU ray tracer. One thread per pixel.
 // build: nvcc -O2 -o raytracer_cuda raytracer_cuda.cu
-// run:   ./raytracer_cuda   (writes ../images/image.ppm)
+// run:   ./raytracer_cuda   (writes ../images/output/image.ppm)
 
 #include <cstdio>
 #include <cstdlib>
@@ -150,7 +150,7 @@ int main() {
     CUDA_CHECK(cudaMemcpy(image.data(), d_image, image.size(), cudaMemcpyDeviceToHost));
     cudaFree(d_image);
 
-    const char* outPath = "../images/image.ppm";
+    const char* outPath = "../images/output/image.ppm";
     FILE* f = fopen(outPath, "wb");
     fprintf(f, "P6\n%d %d\n255\n", W, H);
     fwrite(image.data(), 1, image.size(), f);
