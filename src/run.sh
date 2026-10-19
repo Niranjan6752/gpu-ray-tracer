@@ -2,6 +2,6 @@
 
 set -e
 
-g++ starter_raytracer_cpu_fresnal_reflection.cpp -o a.out
+g++ raytracer_cpu_fresnel_reflection.cpp -o a.out
 ./a.out
 # open image.ppm

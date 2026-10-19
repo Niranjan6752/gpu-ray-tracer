@@ -15,10 +15,9 @@
 #include <cstdio>
 #include <cmath>
 #include <vector>
+#include <chrono>
+#include "config.h"
 
-
-#define ball_reflection 0.1f
-#define scene_reflection 0.3f
 
 // ---- A tiny 3D vector, used for points, directions, and colors (r,g,b) -----
 struct Vec3 {
@@ -42,10 +41,10 @@ struct Sphere {
 
 // The whole scene is just a list of spheres. (The floor is a giant sphere.)
 std::vector<Sphere> scene = {
-    { Vec3(0, -1000.5f, -1), 1000.0f, Vec3(0.5f, 0.5f, 0.5f), scene_reflection, true }, // floor
-    { Vec3(0,     0.0f, -1),    0.5f, Vec3(0.9f, 0.2f, 0.2f), ball_reflection, false }, // red
-    { Vec3(-1.1f, 0.0f, -1),    0.5f, Vec3(0.2f, 0.7f, 0.3f), ball_reflection, false }, // green
-    { Vec3( 1.1f, 0.0f, -1),    0.5f, Vec3(0.2f, 0.4f, 0.9f), ball_reflection, false }, // blue
+    { Vec3(0, -1000.5f, -1), 1000.0f, Vec3(0.5f, 0.5f, 0.5f), FLOOR_K, true }, // floor
+    { Vec3(0,     0.0f, -1),    0.5f, Vec3(0.9f, 0.2f, 0.2f), BALL_K, false }, // red
+    { Vec3(-1.1f, 0.0f, -1),    0.5f, Vec3(0.2f, 0.7f, 0.3f), BALL_K, false }, // green
+    { Vec3( 1.1f, 0.0f, -1),    0.5f, Vec3(0.2f, 0.4f, 0.9f), BALL_K, false }, // blue
 };
 
 // A ray is a point p(t) = origin + t * dir. This finds where (if anywhere) the
@@ -128,14 +127,16 @@ Vec3 rayColor(Vec3 origin, Vec3 dir, int bounces) {// Origin is the CameraPositi
     
     if(bounces == 0 || k==0)return local_color;
     float cosTheta = std::fmax(0.0f, dot(n, dir * -1.0f));
-    float F = k + (1-k)*std::pow(1-cosTheta, 5); //Schlick's formula for Fresnel Formula
+    float x  = 1.0f - cosTheta;
+    float x2 = x * x;
+    float F  = k + (1.0f - k) * (x2 * x2 * x);   // x^5 without pow (pow would run in double)
     Vec3 reflected_color = rayColor(p + n*0.001f, reflectedDir, bounces-1);
     
     return local_color * (1.0f - F) + reflected_color * F;
 }
 
 int main() {
-    const int W = 800, H = 600; //Setup image dimensions
+    const int W = WIDTH, H = HEIGHT; //Setup image dimensions
     std::vector<unsigned char> image(W * H * 3);//Total Pixels - Stored as (R, G, B per pixel)
 
     // TRY IT: move the camera and see how the view changes.
@@ -143,6 +144,8 @@ int main() {
     Vec3  cameraPos(0, 1, 3);
     float aspect = (float)W / H;
 
+
+    auto t0 = std::chrono::high_resolution_clock::now();
     // For every pixel, build a ray from the camera and compute its color.
     for (int py = 0; py < H; py++) {
         for (int px = 0; px < W; px++) {
@@ -151,7 +154,7 @@ int main() {
             float v = (1.0f - 2.0f * (py + 0.5f) / H);
             Vec3  dir = normalize(Vec3(u, v, -1.5f));
 
-            Vec3 color = rayColor(cameraPos, dir, 5);
+            Vec3 color = rayColor(cameraPos, dir, NUM_BOUNCES);
 
             // Store the color as 3 bytes (clamp to [0,1] first).
             int idx = (py * W + px) * 3;
@@ -160,12 +163,20 @@ int main() {
             image[idx + 2] = (unsigned char)(std::fmin(color.z, 1.0f) * 255);
         }
     }
-
+    auto t1 = std::chrono::high_resolution_clock::now();
+    double ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
+    printf("cpu: %.1f ms\n", ms);
+    
     // Write a PPM image file (a very simple image format).
-    FILE* f = fopen("image.ppm", "wb");
+    const char* outPath = "../images/output/cpu.ppm";
+    FILE* f = fopen(outPath, "wb");
+    if (!f) {
+        fprintf(stderr, "Could not open %s (run: mkdir -p ../images/output)\n", outPath);
+        return 1;
+    }
     fprintf(f, "P6\n%d %d\n255\n", W, H);
     fwrite(image.data(), 1, image.size(), f);
     fclose(f);
-    printf("Wrote image.ppm (%dx%d)\n", W, H);
+    printf("Wrote %s (%dx%d)\n", outPath, W, H);
     return 0;
 }

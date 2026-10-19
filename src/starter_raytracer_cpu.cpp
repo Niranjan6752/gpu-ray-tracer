@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cmath>
 #include <vector>
+#include <config.h>
 
 // ---- A tiny 3D vector, used for points, directions, and colors (r,g,b) -----
 struct Vec3 {
