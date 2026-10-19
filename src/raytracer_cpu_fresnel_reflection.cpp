@@ -73,66 +73,129 @@ int closestHit(Vec3 origin, Vec3 dir, float& tHit) {
     return best;
 }
 
-// Compute the color seen along one ray.
-Vec3 rayColor(Vec3 origin, Vec3 dir, int bounces) {// Origin is the CameraPosition, Dir
-    // TRY IT: move the light around and see how shading/shadows change.
-    // x = right, y = up, z = toward the camera.
-    
-    Vec3  lightPos(4, 6, 2);
-    float tHit; //This stores the closest hit point
-    int   hit = closestHit(origin, dir, tHit); //The sphere which is being hit by the ray
 
+// Recursive version (kept for comparison with the loop version).
+Vec3 rayColorRecursive(Vec3 origin, Vec3 dir, int bounces) {
+    Vec3  lightPos(4, 6, 2);
+    float tHit;
+    int   hit = closestHit(origin, dir, tHit);
+
+    // Base case 1: miss -> sky
     if (hit < 0) {
-        // Miss: draw a simple sky gradient (white near horizon -> blue up top).
         float t = 0.5f * (dir.y + 1.0f);
-        return Vec3(1, 1, 1) * (1 - t) + Vec3(0.4f, 0.6f, 1.0f) * t; // blend white and blue
+        return Vec3(1, 1, 1) * (1 - t) + Vec3(0.4f, 0.6f, 1.0f) * t;
     }
 
-    // The point we hit, and the surface normal there.
     Vec3 p = origin + dir * tHit;
+    Vec3 n = normalize(p - scene[hit].center);
 
-    // hit is the index of the sphere that was hit. 
-    // p − center is an arrow from the sphere’s centre out to the hit point, 
-    // which is perpendicular to the surface there.
-    Vec3 n = normalize(p - scene[hit].center); // Surface Normal
-
-    // Base color: checkerboard for the floor, solid color otherwise.
     Vec3 base = scene[hit].color;
-
-    Vec3 reflectedDir = dir - n * (2.0f * dot(dir, n)); // For reflection
-
-    //CheckerBoard color Logic
     if (scene[hit].isFloor) {
         int cx = (int)std::floor(p.x), cz = (int)std::floor(p.z);
         bool white = ((cx + cz) & 1) == 0;
         base = white ? Vec3(0.9f, 0.9f, 0.9f) : Vec3(0.2f, 0.2f, 0.2f);
-        // base = white ? Vec3(0.0, 0.0, 0.0) : Vec3(1, 1, 1)*2;
     }
 
-    // Diffuse lighting: how directly does the surface face the light?
-    Vec3  toLight = normalize(lightPos - p); // Lighting Direction
+    Vec3  toLight = normalize(lightPos - p);
     float diffuse = std::fmax(0.0f, dot(n, toLight));
 
-    // Hard shadow: shoot a ray toward the light; if it hits something, we're shadowed.
     float shadowT;
     int   blocked = closestHit(p + n * 0.001f, toLight, shadowT);
     float shade = (blocked >= 0) ? 0.3f : 1.0f;
 
-    float brightness = 0.15f + diffuse * shade;   // 0.15 = a little ambient light
-
+    float brightness = 0.15f + diffuse * shade;
     float k = scene[hit].reflectivity;
-    
-
     Vec3 local_color = base * brightness;
-    
-    if(bounces == 0 || k==0)return local_color;
+
+    // Base case 2: out of bounces, or matte surface
+    if (bounces == 0 || k == 0) return local_color;
+
+    Vec3 reflectedDir = dir - n * (2.0f * dot(dir, n));
+
     float cosTheta = std::fmax(0.0f, dot(n, dir * -1.0f));
     float x  = 1.0f - cosTheta;
     float x2 = x * x;
-    float F  = k + (1.0f - k) * (x2 * x2 * x);   // x^5 without pow (pow would run in double)
-    Vec3 reflected_color = rayColor(p + n*0.001f, reflectedDir, bounces-1);
-    
+    float F  = k + (1.0f - k) * (x2 * x2 * x);
+
+    Vec3 reflected_color = rayColorRecursive(p + n * 0.001f, reflectedDir, bounces - 1);
     return local_color * (1.0f - F) + reflected_color * F;
+}
+
+
+// Compute the color seen along one ray.
+Vec3 rayColorIterative(Vec3 origin, Vec3 dir, int bounces) {// Origin is the CameraPosition, Dir
+    // TRY IT: move the light around and see how shading/shadows change.
+    // x = right, y = up, z = toward the camera.
+    Vec3  lightPos(4, 6, 2);
+
+    Vec3 ans = {0.0, 0.0, 0.0};
+
+    float weight = 1.0f;
+
+    bounces++;
+    while(bounces--){
+        float tHit; //This stores the closest hit point
+        int hit = closestHit(origin, dir, tHit); //The sphere which is being hit by the ray
+        
+        if (hit < 0) {
+            // Miss: draw a simple sky gradient (white near horizon -> blue up top).
+            float t = 0.5f * (dir.y + 1.0f);
+            Vec3 sky = Vec3(1, 1, 1) * (1 - t) + Vec3(0.4f, 0.6f, 1.0f) * t; // blend white and blue
+            return ans + sky * weight;
+            // continue;
+        }
+    
+        // The point we hit, and the surface normal there.
+        Vec3 p = origin + dir * tHit;
+    
+        // hit is the index of the sphere that was hit. 
+        // p − center is an arrow from the sphere’s centre out to the hit point, 
+        // which is perpendicular to the surface there.
+        Vec3 n = normalize(p - scene[hit].center); // Surface Normal
+    
+        // Base color: checkerboard for the floor, solid color otherwise.
+        Vec3 base = scene[hit].color;
+    
+        Vec3 reflectedDir = dir - n * (2.0f * dot(dir, n)); // For reflection
+    
+        //CheckerBoard color Logic
+        if (scene[hit].isFloor) {
+            int cx = (int)std::floor(p.x), cz = (int)std::floor(p.z);
+            bool white = ((cx + cz) & 1) == 0;
+            base = white ? Vec3(0.9f, 0.9f, 0.9f) : Vec3(0.2f, 0.2f, 0.2f);
+            // base = white ? Vec3(0.0, 0.0, 0.0) : Vec3(1, 1, 1)*2;
+        }
+    
+        // Diffuse lighting: how directly does the surface face the light?
+        Vec3  toLight = normalize(lightPos - p); // Lighting Direction
+        float diffuse = std::fmax(0.0f, dot(n, toLight));
+    
+        // Hard shadow: shoot a ray toward the light; if it hits something, we're shadowed.
+        float shadowT;
+        int   blocked = closestHit(p + n * 0.001f, toLight, shadowT);
+        float shade = (blocked >= 0) ? 0.3f : 1.0f;
+    
+        float brightness = 0.15f + diffuse * shade;   // 0.15 = a little ambient light
+    
+        float k = scene[hit].reflectivity;
+        
+    
+        Vec3 local_color = base * brightness;
+        
+        if(bounces == 0 || k==0)return ans + local_color * weight;
+
+        float cosTheta = std::fmax(0.0f, dot(n, dir * -1.0f));
+        float x  = 1.0f - cosTheta;
+        float x2 = x * x;
+        float F  = k + (1.0f - k) * (x2 * x2 * x);   // x^5 without pow (pow would run in double)
+
+        // Vec3 reflected_color = rayColor(p + n*0.001f, reflectedDir, bounces-1);
+        origin = p + n*0.001f; dir = reflectedDir;
+
+        ans = ans + local_color * ((1.0f - F) * weight);
+        weight = weight * F;
+    }
+    return ans;
 }
 
 int main() {
@@ -154,7 +217,7 @@ int main() {
             float v = (1.0f - 2.0f * (py + 0.5f) / H);
             Vec3  dir = normalize(Vec3(u, v, -1.5f));
 
-            Vec3 color = rayColor(cameraPos, dir, NUM_BOUNCES);
+            Vec3 color = rayColorIterative(cameraPos, dir, NUM_BOUNCES);
 
             // Store the color as 3 bytes (clamp to [0,1] first).
             int idx = (py * W + px) * 3;
