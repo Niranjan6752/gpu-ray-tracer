@@ -4,3 +4,6 @@ src/*.ppm
 src/*.png
 src/a.out
 *.out
+
+*.exe
+*.obj
