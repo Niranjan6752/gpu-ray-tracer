@@ -1,5 +1,4 @@
-// Shared settings for the CPU and GPU ray tracers.
-// Pick a scene at compile time: -DSCENE=1 (matte), 2 (default), 3 (stress)
+// -DSCENE=1 (matte), 2 (default), 3 (stress)
 #pragma once
 
 #ifndef SCENE
