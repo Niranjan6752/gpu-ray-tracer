@@ -1,0 +1,13 @@
+name,flags,registers,stack_frame
+blk_8x4,-DBLOCK_X=8 -DBLOCK_Y=4,registers=43,stack_frame_bytes=256
+blk_8x8,-DBLOCK_X=8 -DBLOCK_Y=8,registers=43,stack_frame_bytes=256
+blk_16x8,-DBLOCK_X=16 -DBLOCK_Y=8,registers=43,stack_frame_bytes=256
+blk_16x16,-DBLOCK_X=16 -DBLOCK_Y=16,registers=43,stack_frame_bytes=256
+blk_32x4,-DBLOCK_X=32 -DBLOCK_Y=4,registers=43,stack_frame_bytes=256
+blk_32x8,-DBLOCK_X=32 -DBLOCK_Y=8,registers=43,stack_frame_bytes=256
+blk_32x1,-DBLOCK_X=32 -DBLOCK_Y=1,registers=43,stack_frame_bytes=256
+lay0_stack32,-DSTACK_SIZE=32,registers=72,stack_frame_bytes=0
+lay1_stack64,-DLAYOUT=1,registers=42,stack_frame_bytes=256
+lay1_stack32,-DLAYOUT=1 -DSTACK_SIZE=32,registers=72,stack_frame_bytes=0
+base,,registers=43,stack_frame_bytes=256
+base,,registers=43,stack_frame_bytes=256

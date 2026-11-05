@@ -342,6 +342,10 @@ void fitMesh(float height, Vec3 base) {
 }
 
 int main() {
+
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    
     if (!loadOBJ("stanford-bunny.obj")) return 1;
     fitMesh(1.0f, Vec3(0, -0.5f, -1.0f));
 

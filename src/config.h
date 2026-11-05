@@ -22,8 +22,8 @@
 #endif
 
 #ifndef WIDTH
-#define WIDTH  800
+#define WIDTH  1080
 #endif
 #ifndef HEIGHT
-#define HEIGHT 600
+#define HEIGHT 3000
 #endif

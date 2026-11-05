@@ -1,0 +1,163 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261105160444
+Username: DESKTOP-NSK1TPK\dell
+RunAs User: DESKTOP-NSK1TPK\dell
+Configuration Name: 
+Machine: DESKTOP-NSK1TPK (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\run_progression.ps1
+Process ID: 10064
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+== 1. spheres cpu vs gpu
+
+raytracer_gpu_fresnel_reflections.cu
+tmpxft_0000680c_00000000-7_raytracer_gpu_fresnel_reflections.cudafe1.cpp
+
+cpu: 114.1 ms
+cpu: 126.3 ms
+cpu: 122.9 ms
+kernel: 0.385 ms   total (incl. copy back): 1.672 ms
+kernel: 0.158 ms   total (incl. copy back): 1.027 ms
+kernel: 0.139 ms   total (incl. copy back): 0.776 ms
+..\images\output/cpu.ppm  vs  ..\images\output/gpu.ppm  (800x600)
+max difference      : 6
+mean difference     : 0.0000
+pixels identical    : 99.992%
+pixels differ > 2   : 0.000%  (1 of 480000)
+wrote ../images/output/diff.png
+
+== 2. bunny brute vs bvh, 200x150
+
+
+
+tmpxft_00001f00_00000000-7_raytracer_gpu_bvh.cudafe1.cpp
+
+-- cpu_mesh (old brute force, has balls)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+cpu: 143553.7 ms
+-- cpu brute
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 249.2 ms
+cpu: 124105.1 ms
+Wrote ../images/output/cpu_bvh.ppm (200x150)
+-- cpu bvh
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 1114.4 ms
+cpu: 75.3 ms
+Wrote ../images/output/cpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 342.2 ms
+cpu: 84.7 ms
+Wrote ../images/output/cpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 287.0 ms
+cpu: 47.2 ms
+Wrote ../images/output/cpu_bvh.ppm (200x150)
+-- gpu brute
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 296.9 ms
+kernel: 163.971 ms   total (incl. copy back): 177.619 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 211.2 ms
+kernel: 166.076 ms   total (incl. copy back): 166.482 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 276.5 ms
+kernel: 161.759 ms   total (incl. copy back): 162.817 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+-- gpu bvh
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 452.7 ms
+kernel: 0.389 ms   total (incl. copy back): 0.731 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 392.3 ms
+kernel: 0.427 ms   total (incl. copy back): 0.740 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 364.7 ms
+kernel: 0.390 ms   total (incl. copy back): 0.683 ms
+Wrote ../images/output/gpu_bvh.ppm (200x150)
+
+
+
+
+== 3. bunny cpu vs gpu, 800x600
+
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 314.7 ms
+cpu: 767.2 ms
+Wrote ../images/output/cpu_bvh.ppm (800x600)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 248.6 ms
+cpu: 873.8 ms
+Wrote ../images/output/cpu_bvh.ppm (800x600)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 226.1 ms
+cpu: 732.4 ms
+Wrote ../images/output/cpu_bvh.ppm (800x600)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 374.3 ms
+kernel: 2.568 ms   total (incl. copy back): 5.044 ms
+Wrote ../images/output/gpu_bvh.ppm (800x600)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 228.1 ms
+kernel: 2.439 ms   total (incl. copy back): 3.218 ms
+Wrote ../images/output/gpu_bvh.ppm (800x600)
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 277.3 ms
+kernel: 2.427 ms   total (incl. copy back): 3.371 ms
+Wrote ../images/output/gpu_bvh.ppm (800x600)
+
+
+== 4. gpu optimisations, 1920x1080
+-- p4_base_16x16
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 220.1 ms
+kernel: median 5.158 ms (min 5.038, max 5.660 over 9 runs)   copy back: 2.777 ms
+RESULT,block=16x16,layout=0,stack=64,W=1920,H=1080,bounces=5,copies=1,tris=69451,nodes=45787,depth=22,median_ms=5.158,min_ms=5.038,max_ms=5.660,copy_ms=2
+.777,checksum=871dc59df03ee720
+-- p4_lay0_8x8
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 419.7 ms
+kernel: median 5.218 ms (min 4.712, max 6.608 over 9 runs)   copy back: 3.938 ms
+RESULT,block=8x8,layout=0,stack=64,W=1920,H=1080,bounces=5,copies=1,tris=69451,nodes=45787,depth=22,median_ms=5.218,min_ms=4.712,max_ms=6.608,copy_ms=3.9
+38,checksum=871dc59df03ee720
+-- p4_lay1_16x16
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 386.8 ms
+kernel: median 3.948 ms (min 3.854, max 4.557 over 9 runs)   copy back: 3.681 ms
+RESULT,block=16x16,layout=1,stack=64,W=1920,H=1080,bounces=5,copies=1,tris=69451,nodes=45787,depth=22,median_ms=3.948,min_ms=3.854,max_ms=4.557,copy_ms=3
+.681,checksum=871dc59df03ee720
+-- p4_lay1_8x4
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 339.9 ms
+kernel: median 4.347 ms (min 4.302, max 4.541 over 9 runs)   copy back: 3.358 ms
+RESULT,block=8x4,layout=1,stack=64,W=1920,H=1080,bounces=5,copies=1,tris=69451,nodes=45787,depth=22,median_ms=4.347,min_ms=4.302,max_ms=4.541,copy_ms=3.3
+58,checksum=871dc59df03ee720
+-- p4_lay1_8x8
+
+Loaded stanford-bunny.obj: 35947 vertices, 69451 triangles
+BVH: 45787 nodes, depth 22, build 298.4 ms
+kernel: median 3.758 ms (min 3.699, max 4.049 over 9 runs)   copy back: 2.911 ms
+RESULT,block=8x8,layout=1,stack=64,W=1920,H=1080,bounces=5,copies=1,tris=69451,nodes=45787,depth=22,median_ms=3.758,min_ms=3.699,max_ms=4.049,copy_ms=2.9
+11,checksum=871dc59df03ee720
+**********************
+Windows PowerShell transcript end
+End time: 20261105161422
+**********************
