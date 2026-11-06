@@ -39,7 +39,7 @@ SMALL_CPU = -O2 -DSCENE=1 -DNO_BALLS -DWIDTH=200 -DHEIGHT=150
 SMALL_GPU = -O2 -arch=$(ARCH) -DSCENE=1 -DNO_BALLS -DWIDTH=200 -DHEIGHT=150
 
 OUT   = ../images/output
-MKOUT = mkdir -p $(OUT)
+MKOUT = -@mkdir -p $(OUT)
 
 # On Windows (MSYS2 g++) a static build avoids a runtime DLL clash
 ifeq ($(OS),Windows_NT)
@@ -47,7 +47,6 @@ CXXFLAGS  += -static
 SMALL_CPU += -static
 EXE   = .exe
 PY    = python
-MKOUT = -mkdir "..\images\output"
 endif
 
 CPU_PROGS = cpu_fresnel cpu_mesh cpu_bvh cpu_bvh_small cpu_brute_small
